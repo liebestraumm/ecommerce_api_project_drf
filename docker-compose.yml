@@ -2,12 +2,13 @@ services:
   database:
     image: mysql:latest
     build: .
-    container_name: ecommerce_db_mysql
-    ports:
-      - '3306:3306'
+    container_name: ecommerce-db-mysql
+    restart: always
     environment:
-       MYSQL_DATABASE: 'ecommerce_api'
-       MYSQL_ROOT_PASSWORD: 'pass'
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: ecommerce_api
+    ports:
+      - "3306:3306"
     volumes:
       - database:/var/lib/mysql
 volumes:
