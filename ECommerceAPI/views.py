@@ -4,12 +4,27 @@ from rest_framework.response import Response
 from .models import MenuItems, Cart
 from .serializers import MenuItemSerializer, CartSerializer
 from .custom_permissions import *
+from rest_framework.filters import OrderingFilter, SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.pagination import PageNumberPagination
 
+class StandardResultsPagination(PageNumberPagination):
+    page_size = 3
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
-# Create your views here.
 class MenuItemsViewSet(viewsets.ModelViewSet):
+    """
+    A ModelViewSet for handling MenuItems with filtering, searching, ordering, and pagination.
+    """
     queryset = MenuItems.objects.all()
     serializer_class = MenuItemSerializer
+    permission_classes = [permissions.IsAuthenticated]  # Default permissions
+    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
+    filterset_fields = ['price', 'title', 'category']  # Fields to filter by
+    ordering_fields = ['price', 'id']  # Fields to order by
+    search_fields = ['title', 'category']  # Fields to search by
+    pagination_class = StandardResultsPagination
 
     def get_permissions(self):
         """
